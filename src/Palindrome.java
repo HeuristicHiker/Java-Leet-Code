@@ -5,7 +5,66 @@ public class Palindrome {
 //        System.out.println("3112213 isPalindrome? " + isPalindrome(3112213)); //false
 //        System.out.println("1000 isPalindrome? " + isPalindrome(1000)); //false
 //        System.out.println("log: "+Math.log10(1000));
-        System.out.println("24: "+sumFirstAndLastDigit(24));
+//        System.out.println("24: "+sumFirstAndLastDigit(24));
+        String answer = longestPalindromicSubstring("ac");
+//        String answer2 = returnLongestPalindrome("a", 4);
+//        System.out.println("Answer: " + answer2 + " " + answer2.length());
+    }
+
+    public static String longestPalindromicSubstring(String s) {
+        if(s.length() <= 2) {
+            return s;
+        }
+        String longestStr = "";
+        int right = s.length() - 1;
+        int left = 0;
+
+        while(left < s.length()) {
+            System.out.println();
+            int longest = longestStr.length();
+            boolean beforeHalfPoint = left < s.length() / 2;
+            int estimatedLenToCheck = beforeHalfPoint ? left * 2 + 1 : (s.length() - left) * 2;
+            System.out.print("Index: " + left);
+            if(estimatedLenToCheck > longest) {
+                System.out.println(" Checking... " + estimatedLenToCheck);
+                String attemptStr = returnLongestPalindrome(s, left);
+                if(attemptStr.length() > longestStr.length()) {
+                    System.out.println(attemptStr);
+                    System.out.println("New winner");
+                    longestStr = attemptStr;
+                }
+            } else {
+                System.out.println(" Skipping... " + estimatedLenToCheck);
+            }
+            left++;
+        }
+
+        return longestStr;
+    }
+
+    public static String returnLongestPalindrome(String s, int index) {
+        if (index > s.length() - 1) return s;
+        StringBuilder longestPalBuilder = new StringBuilder();
+        longestPalBuilder.append(s.charAt(index));
+
+        for(int i = 1; (index - i) >= 0 && (index + i) < s.length(); i++) {
+            char leftMost = s.charAt(index - i);
+            char middle = s.charAt(index);
+            char rightMost = s.charAt(index + i);
+            if(leftMost == rightMost) {
+                longestPalBuilder.insert(0, leftMost).append(rightMost);
+            } else if (i == 1 && leftMost == middle) {
+                longestPalBuilder.insert(0, leftMost);
+            } else {
+                return longestPalBuilder.toString();
+            }
+            System.out.println("=== " + i + " ===");
+            System.out.println(leftMost + " " + middle + " " + rightMost);
+            System.out.println("--- " + s + " ---");
+        }
+        String longestPalStr = longestPalBuilder.toString();
+        System.out.println("Found longest pal: " + longestPalStr);
+        return longestPalStr;
     }
 
     public static int sumFirstAndLastDigit(int number) {
