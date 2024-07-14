@@ -6,40 +6,37 @@ public class Palindrome {
 //        System.out.println("1000 isPalindrome? " + isPalindrome(1000)); //false
 //        System.out.println("log: "+Math.log10(1000));
 //        System.out.println("24: "+sumFirstAndLastDigit(24));
-        String answer = longestPalindromicSubstring("ac");
+        String answer = longestPalindromicSubstring("babab");
 //        String answer2 = returnLongestPalindrome("a", 4);
-//        System.out.println("Answer: " + answer2 + " " + answer2.length());
+        System.out.println("Answer: " + answer + " " + answer.length());
     }
 
     public static String longestPalindromicSubstring(String s) {
-        if(s.length() <= 2) {
-            return s;
+        if(s.length() < 1 || s == null) {
+            return "";
         }
         String longestStr = "";
-        int right = s.length() - 1;
-        int left = 0;
+        int start = 0, end = 0;
 
-        while(left < s.length()) {
-            System.out.println();
-            int longest = longestStr.length();
-            boolean beforeHalfPoint = left < s.length() / 2;
-            int estimatedLenToCheck = beforeHalfPoint ? left * 2 + 1 : (s.length() - left) * 2;
-            System.out.print("Index: " + left);
-            if(estimatedLenToCheck > longest) {
-                System.out.println(" Checking... " + estimatedLenToCheck);
-                String attemptStr = returnLongestPalindrome(s, left);
-                if(attemptStr.length() > longestStr.length()) {
-                    System.out.println(attemptStr);
-                    System.out.println("New winner");
-                    longestStr = attemptStr;
-                }
-            } else {
-                System.out.println(" Skipping... " + estimatedLenToCheck);
+        for(int i = 0; i < s.length(); i++) {
+            int oddCheck = expandAroundCenter(s, i, i);
+            int evenCheck = expandAroundCenter(s, i, i + 1);
+            int len = Math.max(oddCheck, evenCheck);
+            if (len > end - start) {
+                start = i - (len -1) / 2;
+                end = i + len / 2;
             }
-            left++;
         }
 
-        return longestStr;
+        return s.substring(start, end + 1);
+    }
+
+    public static int expandAroundCenter(String s, int left, int right) {
+        while(left >= 0 && right < s.length() && s.charAt(left) == s.charAt(right)) {
+            left--;
+            right++;
+        }
+        return right - left - 1;
     }
 
     public static String returnLongestPalindrome(String s, int index) {
